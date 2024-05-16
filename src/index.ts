@@ -16,7 +16,7 @@ app.post("/users", (req: Request, res: Response) => {
   res.status(201).json(newUser);
 });
 
-// Read all users
+
 app.get("/users", (req: Request, res: Response) => {
   res.status(200).json();
 });
