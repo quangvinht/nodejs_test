@@ -16,7 +16,7 @@ export const getUserByUsername = (req: Request, res: Response): void => {
   const userFilter = users.filter((user: User) =>
     user.username.includes(username)
   );
-  if (!userFilter) {
+  if (userFilter.length === 0) {
     res.status(404).json({ status: 404, message: "User not found" });
     return;
   }
@@ -59,13 +59,11 @@ export const updateUser = (req: Request, res: Response): void => {
     ...userInfo,
   };
 
-  res
-    .status(200)
-    .json({
-      status: 200,
-      data: users[userIndex],
-      message: "Update user success!",
-    });
+  res.status(200).json({
+    status: 200,
+    data: users[userIndex],
+    message: "Update user success!",
+  });
 };
 
 //DELETE: delete user
