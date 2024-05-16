@@ -8,7 +8,7 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 app.get("/", (req: Request, res: Response) => {
-  res.send("Hello , This a test for nodejsss ");
+  res.send("Hello , This a test for nodejs ");
 });
 
 app.use(express.json());

@@ -3,52 +3,83 @@ import { User } from "../models/user";
 
 let users: User[] = [];
 
+//GET: all user
 export const getUsers = (req: Request, res: Response): void => {
-  res.json(users);
+  res
+    .status(200)
+    .json({ status: 200, data: users, message: "Get all user success!" });
 };
 
+//GET: seach user by username
 export const getUserByUsername = (req: Request, res: Response): void => {
   const { username } = req.params;
-  const user = users.find((user) => user.username === username);
-  if (!user) {
-    res.status(404).json({ message: "User not found" });
+  const userFilter = users.filter((user: User) =>
+    user.username.includes(username)
+  );
+  if (!userFilter) {
+    res.status(404).json({ status: 404, message: "User not found" });
+    return;
   }
 
-  res.json(user);
+  res
+    .status(200)
+    .json({ status: 200, data: userFilter, message: "Search user success!" });
 };
 
+//POST: create new user
 export const createUser = (req: Request, res: Response): void => {
   const newUser: User = req.body;
 
   const user = users.find((user: User) => user.username === newUser.username);
 
-  if (!user) {
-    res.status(409).json({ message: "User already exists !" });
+  if (user) {
+    res.status(409).json({ status: 409, message: "User already exists !" });
+    return;
   }
 
   users.push(newUser);
-  res.status(201).json(newUser);
+  res
+    .status(201)
+    .json({ status: 201, data: newUser, message: "Create new user success!" });
 };
 
+//PATCH: update user
 export const updateUser = (req: Request, res: Response): void => {
   const { username } = req.params;
-  const updatedUser: User = req.body;
-  const userIndex = users.findIndex((user) => user.username === username);
-  if (userIndex !== -1) {
-    users[userIndex] = updatedUser;
-    res.json(updatedUser);
-  } else {
-    res.status(404).json({ message: "User not found" });
+  const userInfo: User = req.body;
+  const userIndex = users.findIndex((user: User) => user.username === username);
+
+  if (userIndex === -1) {
+    res.status(404).json({ status: 404, message: "User not found" });
+    return;
   }
+
+  users[userIndex] = {
+    ...users[userIndex],
+    ...userInfo,
+  };
+
+  res
+    .status(200)
+    .json({
+      status: 200,
+      data: users[userIndex],
+      message: "Update user success!",
+    });
 };
 
+//DELETE: delete user
 export const deleteUser = (req: Request, res: Response): void => {
   const { username } = req.params;
-  const updatedUsers = users.filter((user) => user.username !== username);
-  if (updatedUsers.length !== users.length) {
-    users = updatedUsers;
-    res.json({ message: "User deleted" });
-  } else {
-    res.status(404).json({ message: "User not found" });
+  const updatedUsers = users.filter((user: User) => user.username !== username);
+  const userDeleted = users.find((user: User) => user.username === username);
+
+  if (!userDeleted) {
+    res.status(404).json({ status: 404, message: "User not found" });
+    return;
   }
+  users = updatedUsers;
+  res
+    .status(200)
+    .json({ status: 200, message: "Delete user success!", data: userDeleted });
 };
